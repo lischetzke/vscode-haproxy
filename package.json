@@ -1,0 +1,64 @@
+{
+    "name": "haproxy-syntax",
+    "displayName": "HAProxy Syntax",
+    "description": "Syntax highlighting for HAProxy configuration files: directives, ACLs, sample fetches, converters, log-format and more",
+    "version": "0.1.0",
+    "publisher": "lischetzke",
+    "author": "Le Duc Lischetzke",
+    "license": "AGPL-3.0-only",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lischetzke/vscode-haproxy.git"
+    },
+    "bugs": {
+        "url": "https://github.com/lischetzke/vscode-haproxy/issues"
+    },
+    "homepage": "https://github.com/lischetzke/vscode-haproxy#readme",
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "keywords": [
+        "haproxy",
+        "hapee",
+        "load balancer",
+        "syntax"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "haproxy",
+                "aliases": [
+                    "HAProxy",
+                    "haproxy"
+                ],
+                "extensions": [
+                    ".haproxy"
+                ],
+                "filenames": [
+                    "haproxy.cfg",
+                    "hapee-lb.cfg"
+                ],
+                "filenamePatterns": [
+                    "**/haproxy*.cfg",
+                    "**/hapee*.cfg",
+                    "**/haproxy/**/*.cfg",
+                    "**/haproxy/**/*.conf",
+                    "**/haproxy.d/*.cfg",
+                    "**/haproxy.d/*.conf"
+                ],
+                "firstLine": "^\\s*(global|defaults|frontend|backend|listen|peers|resolvers|userlist|mailers|program|http-errors|ring|cache|log-forward|log-profile|crt-store|traces|acme|fcgi-app)(\\s|$)",
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "haproxy",
+                "scopeName": "source.haproxy",
+                "path": "./syntaxes/haproxy.tmLanguage.json"
+            }
+        ]
+    }
+}

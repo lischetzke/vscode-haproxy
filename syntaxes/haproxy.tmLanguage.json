@@ -1,0 +1,698 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "HAProxy",
+    "scopeName": "source.haproxy",
+    "patterns": [
+        {
+            "include": "#comment"
+        },
+        {
+            "include": "#preprocessor"
+        },
+        {
+            "include": "#section"
+        },
+        {
+            "include": "#directive"
+        },
+        {
+            "include": "#arguments"
+        }
+    ],
+    "repository": {
+        "comment": {
+            "match": "(?<!\\\\)#.*$",
+            "name": "comment.line.number-sign.haproxy"
+        },
+        "preprocessor": {
+            "patterns": [
+                {
+                    "begin": "^\\s*(\\.(?:if|elif))(?![\\w.-])",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword.control.directive.conditional.haproxy"
+                        }
+                    },
+                    "end": "(?=$|#)",
+                    "patterns": [
+                        {
+                            "match": "(?<![\\w.-])(defined|feature|streq|strneq|strstr|version_atleast|version_before|enabled)(?=\\()",
+                            "name": "support.function.builtin.haproxy"
+                        },
+                        {
+                            "match": "&&|\\|\\||!",
+                            "name": "keyword.operator.logical.haproxy"
+                        },
+                        {
+                            "include": "#string-double"
+                        },
+                        {
+                            "include": "#string-single"
+                        },
+                        {
+                            "include": "#env-var"
+                        },
+                        {
+                            "include": "#number"
+                        }
+                    ]
+                },
+                {
+                    "match": "^\\s*(\\.(?:else|endif))(?![\\w.-])",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.control.directive.conditional.haproxy"
+                        }
+                    }
+                },
+                {
+                    "begin": "^\\s*(\\.(?:diag|notice|warning|alert|line|outdent))(?![\\w.-])",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword.control.directive.haproxy"
+                        }
+                    },
+                    "end": "(?=$|#)",
+                    "patterns": [
+                        {
+                            "include": "#string-double"
+                        },
+                        {
+                            "include": "#string-single"
+                        },
+                        {
+                            "include": "#env-var"
+                        }
+                    ]
+                }
+            ]
+        },
+        "section": {
+            "match": "^\\s*(global|defaults|frontend|backend|listen|peers|resolvers|userlist|mailers|program|http-errors|ring|cache|log-forward|log-profile|crt-store|traces|acme|fcgi-app)(?![\\w.-])(?:\\s+(?!from\\s|#)([^\\s#]+))?(?:\\s+(from)\\s+([^\\s#]+))?",
+            "captures": {
+                "1": {
+                    "name": "keyword.control.section.haproxy"
+                },
+                "2": {
+                    "name": "entity.name.section.haproxy"
+                },
+                "3": {
+                    "name": "keyword.other.haproxy"
+                },
+                "4": {
+                    "name": "entity.name.section.haproxy"
+                }
+            }
+        },
+        "directive": {
+            "patterns": [
+                {
+                    "match": "^\\s*(?:(no|default)\\s+)?(option)\\s+([\\w-]+)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.haproxy"
+                        },
+                        "2": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "3": {
+                            "name": "support.constant.option.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(timeout)\\s+([\\w-]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "support.constant.option.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(http-request|http-response|http-after-response|http-check|tcp-check|quic-initial)\\s+([a-zA-Z][\\w.-]*)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "support.function.action.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(tcp-request|tcp-response)\\s+(connection|session|content|inspect-delay)(?![\\w.-])(?:\\s+([a-zA-Z][\\w.-]*))?",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "3": {
+                            "name": "support.function.action.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(stats|stick|email-alert|capture)\\s+([\\w-]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "support.constant.option.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(acl)\\s+([^\\s#]+)(?:\\s+([a-zA-Z][\\w.]*)(?![\\w.(-]))?",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "entity.name.tag.acl.haproxy"
+                        },
+                        "3": {
+                            "name": "support.variable.fetch.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(use_backend|default_backend)\\s+(?!%)([^\\s#]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "entity.name.type.backend.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(use_backend|default_backend)(?![\\w.-])",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(server|server-template|use-server|peer|mailer|nameserver|user|group)\\s+([^\\s#]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "entity.name.variable.server.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(use-service|filter)\\s+([\\w.-]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "support.function.action.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(mode|balance|http-reuse)\\s+([\\w-]+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "constant.language.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "^\\s*(on)\\s+([\\w-]+)(?:\\s+(format|sd|drop))?",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.directive.haproxy"
+                        },
+                        "2": {
+                            "name": "constant.language.haproxy"
+                        },
+                        "3": {
+                            "name": "keyword.other.directive.haproxy"
+                        }
+                    }
+                },
+                {
+                    "begin": "^\\s*(?:(no|default)\\s+)?(log)(?![\\w.-])",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "storage.modifier.haproxy"
+                        },
+                        "2": {
+                            "name": "keyword.other.directive.haproxy"
+                        }
+                    },
+                    "end": "(?=$|#)",
+                    "patterns": [
+                        {
+                            "match": "(?<![\\w./:@$-])(?:kern|user|mail|daemon|auth|syslog|lpr|news|uucp|cron|auth2|ftp|ntp|audit|cron2|local0|local1|local2|local3|local4|local5|local6|local7|stdout|stderr|raw|rfc3164|rfc5424|short|priority|timed|iso|local)(?![\\w./:@-])",
+                            "name": "constant.language.facility.haproxy"
+                        },
+                        {
+                            "include": "#arguments"
+                        }
+                    ]
+                },
+                {
+                    "match": "^\\s*(?:(no)\\s+)?(ca-base|chroot|close-spread-time|cluster-secret|cpu-map|cpu-policy|cpu-set|crt-base|daemon|default-path|description|dns-accept-family|expose-deprecated-directives|expose-experimental-directives|external-check|fd-hard-limit|force-cfg-parser-pause|gid|grace|group|guid-prefix|h1-accept-payload-with-any-method|h1-case-adjust|h1-case-adjust-file|h1-do-not-close-on-insecure-transfer-encoding|h2-workaround-bogus-websocket-clients|hard-stop-after|insecure-fork-wanted|insecure-setuid-wanted|issuers-chain-path|key-base|limited-quic|localpeer|log-send-hostname|log-tag|lua-load|lua-load-per-thread|lua-prepend-path|master-worker|maxcompcpuusage|maxcomprate|maxconn|maxconnrate|maxpipes|maxsessrate|maxsslconn|maxsslrate|maxzlibmem|max-spread-checks|mworker-max-reloads|nbproc|nbthread|node|noepoll|noevports|nogetaddrinfo|nokqueue|nopoll|noreuseport|nosplice|no-memory-trimming|numa-cpu-mapping|pidfile|pp2-never-send-local|prealloc-fd|presetenv|quick-exit|quiet|resetenv|set-dumpable|set-var|set-var-fmt|setcap|setenv|shm-stats-file|shm-stats-file-max-objects|spread-checks|stats-file|strict-limits|thread-group|thread-groups|thread-hard-limit|trace|uid|ulimit-n|unix-bind|unsetenv|warn-blocked-traffic-after|zero-warning|busy-polling|debug|anonkey|backlog|bind|capture|compression|cookie|declare|default-server|disabled|dispatch|enabled|errorfile|errorfiles|errorloc|errorloc302|errorloc303|error-log-format|force-persist|fullconn|guid|hash-balance-factor|hash-key|hash-preserve-affinity|hash-type|http-error|http-send-name-header|id|ignore-persist|load-server-state-from-file|log-format|log-format-sd|log-steps|max-keep-alive-queue|max-session-srv-conns|monitor|monitor-uri|persist|rate-limit|redirect|retries|retry-on|server-state-file-name|source|stick-table|transparent|unique-id-format|unique-id-header|use-fcgi-app|clitcpka-cnt|clitcpka-idle|clitcpka-intvl|srvtcpka-cnt|srvtcpka-idle|srvtcpka-intvl|server-state-base|server-state-file|table|shards|default-bind|parse-resolv-conf|accepted_payload_size|hold|resolve_retries|resolution_pool_size|total-max-size|max-object-size|max-age|process-vary|max-secondary-entries|format|size|backing-file|maxlen|command|docroot|index|path-info|pass-header|set-param|log-stderr|load|dgram-bind|directory|account-key|contact|challenge|keytype|bits|curves|map|provider-name|acme-vars|(?:tune|httpclient|ocsp-update|profiling|harden|limits)\\.[\\w.-]+|ssl-[\\w-]+|(?:51degrees|wurfl|deviceatlas)-[\\w-]+)(?![\\w.-])",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.haproxy"
+                        },
+                        "2": {
+                            "name": "keyword.other.directive.haproxy"
+                        }
+                    }
+                }
+            ]
+        },
+        "arguments": {
+            "patterns": [
+                {
+                    "include": "#comment"
+                },
+                {
+                    "include": "#string-double"
+                },
+                {
+                    "include": "#string-single"
+                },
+                {
+                    "include": "#log-format-sample"
+                },
+                {
+                    "include": "#escape"
+                },
+                {
+                    "include": "#condition"
+                },
+                {
+                    "match": "(?<![\\w.-])(store)\\s+([^\\s#]+)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.other.attribute-name.option.haproxy"
+                        },
+                        "2": {
+                            "name": "support.type.data-type.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "(?<![\\w.-])(alpn|npn|check-alpn)\\s+([^\\s#]+)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.other.attribute-name.option.haproxy"
+                        },
+                        "2": {
+                            "name": "string.unquoted.protocol-list.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "(?<![\\w.-])(table|peers)\\s+([a-zA-Z_][\\w.-]*)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.other.attribute-name.option.haproxy"
+                        },
+                        "2": {
+                            "name": "entity.name.type.table.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "(?<=\\s)(-m)\\s+(beg|dir|dom|end|found|int|ip|len|reg|str|sub|bool)(?![\\w.-])",
+                    "captures": {
+                        "1": {
+                            "name": "constant.language.flag.haproxy"
+                        },
+                        "2": {
+                            "name": "constant.language.match-method.haproxy"
+                        }
+                    }
+                },
+                {
+                    "match": "(?<=\\s)-[a-zA-Z][\\w-]*(?![\\w.-])|(?<=\\s)--(?=\\s)",
+                    "name": "constant.language.flag.haproxy"
+                },
+                {
+                    "match": "(?<![\\w.-])(?:eq|ne|gt|ge|lt|le)(?![\\w.-])",
+                    "name": "keyword.operator.comparison.haproxy"
+                },
+                {
+                    "include": "#address"
+                },
+                {
+                    "include": "#fetch-call"
+                },
+                {
+                    "include": "#converter"
+                },
+                {
+                    "include": "#var-name"
+                },
+                {
+                    "include": "#fetch-bare"
+                },
+                {
+                    "match": "(?<![\\w.-])(?:SSLv3|TLSv1(?:\\.[0-3])?)(?![\\w.-])",
+                    "name": "constant.language.tls-version.haproxy"
+                },
+                {
+                    "match": "(?<![\\w./:@$-])(?:true|false|on|off|none|required|optional|all|any|error|emerg|alert|crit|err|warning|notice|info|silent|GET|HEAD|POST|PUT|DELETE|PATCH|OPTIONS|CONNECT|TRACE|ipv4|ipv6|admin|operator)(?![\\w./:@-])",
+                    "name": "constant.language.haproxy"
+                },
+                {
+                    "match": "(?<![\\w./:@$-])(?:accept-netscaler-cip|accept-proxy|addr|agent-addr|agent-check|agent-inter|agent-port|agent-send|allow-0rtt|backup|ca-file|ca-ignore-err|ca-sign-file|ca-verify-file|ciphers|ciphersuites|client-sigalgs|check|check-proto|check-reuse-pool|check-send-proxy|check-sni|check-ssl|check-via-socks4|crl-file|crt|crt-ignore-err|crt-list|curves|defer-accept|disabled|downinter|ecdhe|enabled|error-limit|expose-fd|fall|force-sslv3|force-tlsv10|force-tlsv11|force-tlsv12|force-tlsv13|generate-certificates|gid|group|guid|id|idle-ping|init-addr|init-state|inter|interface|level|log-bufsize|log-proto|maxconn|maxqueue|max-reuse|minconn|mode|name|namespace|nbconn|nice|no-alpn|no-ca-names|no-check|no-check-ssl|no-send-proxy|no-ssl|no-sslv3|no-tls-tickets|no-tlsv10|no-tlsv11|no-tlsv12|no-tlsv13|no-verifyhost|observe|on-error|on-marked-down|on-marked-up|pool-conn-name|pool-low-conn|pool-max-conn|pool-purge-delay|port|prefer-client-ciphers|proto|proxy-v2-options|quic-cc-algo|quic-force-retry|quic-socket|redir|resolve-net|resolve-opts|resolve-prefer|resolvers|rise|send-proxy|send-proxy-v2|send-proxy-v2-ssl|send-proxy-v2-ssl-cn|set-proxy-v2-tlv-fmt|severity-output|shard|sigalgs|slowstart|sni|socks4|ssl|ssl-max-ver|ssl-min-ver|ssl-reuse|strict-sni|tcp-ut|tfo|thread|tls-ticket-keys|track|transparent|uid|user|usesrc|v4v6|v6only|verify|verifyhost|weight|ws|process|acme|ocsp-update|key|ocsp|issuer|sctl|alias|status|content-type|hdr|lf-file|lf-string|file|string|errorfile|errorfiles|default-errorfiles|location|prefix|scheme|code|drop-query|append-slash|set-cookie|clear-cookie|keep-query|ignore-empty|set-cookie-fmt|deny_status|realm|len|expire|size|type|nopurge|srvkey|write-to|recv-only|format|profile|sample|meth|uri|uri-lf|ver|body|body-lf|comment|min-recv|ok-status|error-status|tout-status|on-success|linger|timeout|socket|from|to|mailers|myhostname|header|request|response|cookie|insert|rewrite|indirect|nocache|postonly|preserve|httponly|secure|domain|maxidle|maxlife|dynamic|attr|algo|offload|tcp)(?![\\w./:@-])",
+                    "name": "entity.other.attribute-name.option.haproxy"
+                },
+                {
+                    "include": "#number"
+                }
+            ]
+        },
+        "condition": {
+            "begin": "(?<![\\w.-])(if|unless)(?![\\w.-])",
+            "beginCaptures": {
+                "1": {
+                    "name": "keyword.control.conditional.haproxy"
+                }
+            },
+            "end": "(?=$|#)",
+            "patterns": [
+                {
+                    "include": "#anonymous-acl"
+                },
+                {
+                    "match": "(?<![\\w.-])(?:or|OR)(?![\\w.-])|\\|\\||!",
+                    "name": "keyword.operator.logical.haproxy"
+                },
+                {
+                    "match": "(?<![\\w.-])[a-zA-Z_][\\w.-]*(?![\\w.-])",
+                    "name": "entity.name.tag.acl.haproxy"
+                }
+            ]
+        },
+        "anonymous-acl": {
+            "name": "meta.acl.anonymous.haproxy",
+            "begin": "\\{(?=\\s)",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.section.braces.begin.haproxy"
+                }
+            },
+            "end": "(?<=\\s)\\}|(?=$)",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.section.braces.end.haproxy"
+                }
+            },
+            "patterns": [
+                {
+                    "match": "(?<=\\{\\s)\\s*([a-zA-Z][\\w.]*)(?![\\w.(-])",
+                    "captures": {
+                        "1": {
+                            "name": "support.variable.fetch.haproxy"
+                        }
+                    }
+                },
+                {
+                    "include": "#arguments"
+                }
+            ]
+        },
+        "string-double": {
+            "name": "string.quoted.double.haproxy",
+            "begin": "\"",
+            "end": "\"|(?=$)",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.begin.haproxy"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.end.haproxy"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#escape"
+                },
+                {
+                    "include": "#env-var"
+                },
+                {
+                    "include": "#log-format"
+                }
+            ]
+        },
+        "string-single": {
+            "name": "string.quoted.single.haproxy",
+            "begin": "'",
+            "end": "'|(?=$)",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.begin.haproxy"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.string.end.haproxy"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#log-format"
+                }
+            ]
+        },
+        "escape": {
+            "match": "\\\\.",
+            "name": "constant.character.escape.haproxy"
+        },
+        "env-var": {
+            "match": "\\$\\{[A-Za-z_][\\w]*(?:[^}]*)\\}|\\$[A-Za-z_]\\w*",
+            "name": "variable.other.environment.haproxy"
+        },
+        "log-format": {
+            "patterns": [
+                {
+                    "match": "%%",
+                    "name": "constant.character.escape.haproxy"
+                },
+                {
+                    "include": "#log-format-sample"
+                },
+                {
+                    "match": "(%)(\\{[^}]*\\})?(\\([^)]*\\))?([A-Za-z]+)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.definition.placeholder.haproxy"
+                        },
+                        "2": {
+                            "name": "storage.modifier.log-format-flags.haproxy"
+                        },
+                        "3": {
+                            "name": "entity.name.tag.log-field.haproxy"
+                        },
+                        "4": {
+                            "name": "constant.other.placeholder.haproxy"
+                        }
+                    }
+                }
+            ]
+        },
+        "log-format-sample": {
+            "name": "meta.embedded.sample.haproxy",
+            "begin": "(%)(\\{[^}]*\\})?(\\([^)]*\\))?(\\[)",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.section.embedded.begin.haproxy"
+                },
+                "2": {
+                    "name": "storage.modifier.log-format-flags.haproxy"
+                },
+                "3": {
+                    "name": "entity.name.tag.log-field.haproxy"
+                },
+                "4": {
+                    "name": "punctuation.section.embedded.begin.haproxy"
+                }
+            },
+            "end": "\\]|(?=$)",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.section.embedded.end.haproxy"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#fetch-call"
+                },
+                {
+                    "include": "#converter"
+                },
+                {
+                    "match": "(?<=\\[)[a-zA-Z][\\w.]*(?![\\w.(])",
+                    "name": "support.variable.fetch.haproxy"
+                },
+                {
+                    "include": "#string-double"
+                },
+                {
+                    "include": "#string-single"
+                },
+                {
+                    "include": "#number"
+                }
+            ]
+        },
+        "fetch-call": {
+            "name": "meta.function-call.haproxy",
+            "begin": "(?<![\\w.-])([a-zA-Z][\\w.]*)(\\()",
+            "beginCaptures": {
+                "1": {
+                    "name": "support.variable.fetch.haproxy"
+                },
+                "2": {
+                    "name": "punctuation.definition.arguments.begin.haproxy"
+                }
+            },
+            "end": "\\)|(?=$)",
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.definition.arguments.end.haproxy"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#call-args"
+                }
+            ]
+        },
+        "converter": {
+            "patterns": [
+                {
+                    "name": "meta.function-call.haproxy",
+                    "begin": "(?<=[\\w)\\]])(,)([a-zA-Z][\\w.]*)(\\()",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "punctuation.separator.converter.haproxy"
+                        },
+                        "2": {
+                            "name": "support.function.converter.haproxy"
+                        },
+                        "3": {
+                            "name": "punctuation.definition.arguments.begin.haproxy"
+                        }
+                    },
+                    "end": "\\)|(?=$)",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.arguments.end.haproxy"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#call-args"
+                        }
+                    ]
+                },
+                {
+                    "match": "(?<=[\\w)\\]])(,)([a-zA-Z][\\w.]*)(?![\\w.(])",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.separator.converter.haproxy"
+                        },
+                        "2": {
+                            "name": "support.function.converter.haproxy"
+                        }
+                    }
+                }
+            ]
+        },
+        "call-args": {
+            "patterns": [
+                {
+                    "include": "#var-name"
+                },
+                {
+                    "include": "#string-double"
+                },
+                {
+                    "include": "#string-single"
+                },
+                {
+                    "include": "#log-format-sample"
+                },
+                {
+                    "include": "#fetch-call"
+                },
+                {
+                    "include": "#number"
+                },
+                {
+                    "match": ",",
+                    "name": "punctuation.separator.arguments.haproxy"
+                }
+            ]
+        },
+        "var-name": {
+            "match": "(?<=\\()(proc|sess|txn|req|res|check)(\\.)([\\w.-]+)",
+            "captures": {
+                "1": {
+                    "name": "storage.modifier.scope.haproxy"
+                },
+                "2": {
+                    "name": "punctuation.accessor.haproxy"
+                },
+                "3": {
+                    "name": "variable.other.haproxy.haproxy"
+                }
+            }
+        },
+        "fetch-bare": {
+            "match": "(?<![\\w./:@$-])(?:src|src_port|src_is_local|dst|dst_port|dst_is_local|path|pathq|url|urlp|url_ip|url_port|query|base|base32|baseq|always_true|always_false|date|now|rand|uuid|ulid|hostname|nbproc|nbsrv|connslots|stopping|wait_end|cpu_calls|lat_ns_avg|be_id|be_name|be_conn|be_sess_rate|fe_id|fe_name|fe_conn|fe_req_rate|fe_sess_rate|srv_id|srv_name|srv_conn|srv_is_up|so_id|so_name|cook|cook_cnt|cook_val|scook|hdr_cnt|hdr_ip|hdr_val|shdr|http_auth|http_auth_group|http_first_req|payload|payload_lv|pid|uptime|last_rule_file|last_rule_line|(?:ssl_(?:fc|c|f|bc|s)|fc|bc|src|dst|sc\\d?|path|url|hdr|cook|req|res|capture|quic|http|jwt|ocsp)[._][\\w.]+|(?:txn|sess|ssl)\\.[\\w.]+)(?![\\w./:@-])",
+            "name": "support.variable.fetch.haproxy"
+        },
+        "address": {
+            "patterns": [
+                {
+                    "match": "(?<![\\w.-])(?:ipv4|ipv6|unix|abns|abnsz|fd|sockpair|udp|udp4|udp6|quic4|quic6|quic|tcp|tcp4|tcp6|rhttp|uxdg|uxst|mptcp|mptcp4|mptcp6)@",
+                    "name": "storage.modifier.address-family.haproxy"
+                },
+                {
+                    "match": "(?<![\\w.:-])\\d{1,3}(?:\\.\\d{1,3}){3}(?:/\\d{1,2})?(?::\\d+(?:-\\d+)?)?(?![\\w.-])",
+                    "name": "constant.numeric.ip-address.haproxy"
+                },
+                {
+                    "match": "(?<![\\w.:-])(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){0,6}(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4})*)?)(?:/\\d{1,3})?(?::\\d+(?:-\\d+)?)?(?![\\w.-])",
+                    "name": "constant.numeric.ip-address.haproxy"
+                },
+                {
+                    "match": "(?<=[\\s@,\"])(?:\\*|\\[[0-9a-fA-F:.]+\\])?:\\d+(?:-\\d+)?(?![\\w.-])",
+                    "name": "constant.numeric.ip-address.haproxy"
+                }
+            ]
+        },
+        "number": {
+            "match": "(?<![\\w./:@$-])\\d+(?:\\.\\d+)?(?:us|ms|s|m|h|d|k|K|M|G|g)?(?![\\w./:@-])",
+            "name": "constant.numeric.haproxy"
+        }
+    }
+}
